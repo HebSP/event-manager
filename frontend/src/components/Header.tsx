@@ -1,13 +1,17 @@
+import { Link } from 'react-router-dom'
+
 function Header() {
   return (
     <header className="header">
       <div className="header-content">
-        <h2>Event Manager</h2>
+        <Link to="/">
+          <h2>Event Manager</h2>
+        </Link>
 
         <nav>
-          <a href="#">Eventos</a>
-          <a href="#">Entrar</a>
-          <button>Criar conta</button>
+          <Link to="/">Eventos</Link>
+          <Link to="/login">Entrar</Link>
+          <Link to="/register">Criar conta</Link>
         </nav>
       </div>
     </header>

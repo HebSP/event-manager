@@ -12,6 +12,11 @@
   justify-content: space-between;
 }
 
+.header-content > a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .header nav {
   display: flex;
   align-items: center;
@@ -29,6 +34,10 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.header h2 {
+  margin: 0;
 }
 
 .hero {

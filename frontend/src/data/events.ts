@@ -6,7 +6,7 @@ export type Event = {
   capacity: number
   registered: number
 }
-
+// mock data for events (will be replaced for a real database in the future)
 export const events: Event[] = [
   {
     id: 1,

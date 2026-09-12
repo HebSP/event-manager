@@ -1,4 +1,7 @@
+import { Link } from 'react-router-dom'
+
 type Event = {
+  id: number
   title: string
   date: string
   location: string
@@ -22,7 +25,9 @@ function EventCard({ event }: EventCardProps) {
         {event.registered} / {event.capacity} inscritos
       </p>
 
-      <button>Ver detalhes</button>
+      <Link to={`/events/${event.id}`}>
+        <button>Ver detalhes</button>
+      </Link>
     </article>
   )
 }
