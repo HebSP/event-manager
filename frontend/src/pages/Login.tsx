@@ -5,12 +5,25 @@ import { useAuth } from '../context/AuthContext'
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
+
+    setError('')
+
+    if (!email || !password) {
+      setError('Preencha todos os campos.')
+      return
+    }
+
+    if (!email.includes('@')) {
+      setError('Digite um e-mail válido.')
+      return
+    }
 
     login({
       name: 'Usuário',
@@ -24,9 +37,12 @@ function Login() {
     <main>
       <h1>Entrar</h1>
 
+      {error && <p>{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">E-mail</label>
+
           <input
             id="email"
             type="email"
@@ -37,6 +53,7 @@ function Login() {
 
         <div>
           <label htmlFor="password">Senha</label>
+
           <input
             id="password"
             type="password"
@@ -45,7 +62,9 @@ function Login() {
           />
         </div>
 
-        <button type="submit">Entrar</button>
+        <button type="submit">
+          Entrar
+        </button>
       </form>
     </main>
   )
