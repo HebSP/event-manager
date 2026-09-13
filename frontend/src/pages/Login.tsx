@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { login as loginApi } from '../services/api'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -11,23 +10,28 @@ function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
+
     setError('')
 
-    try {
-      const data = await loginApi(email, password)
-
-      login(data.user, data.token)
-
-      navigate('/')
-    } catch (error) {
-      console.error(error)
-      setError('E-mail ou senha inválidos.')
+    if (!email || !password) {
+      setError('Preencha todos os campos.')
+      return
     }
+
+    if (!email.includes('@')) {
+      setError('Digite um e-mail válido.')
+      return
+    }
+
+    login({
+      name: 'Usuário',
+      email,
+    })
+
+    navigate('/')
   }
-
-
 
   return (
     <main>

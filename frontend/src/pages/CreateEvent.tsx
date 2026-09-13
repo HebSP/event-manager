@@ -1,25 +1,21 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createEvent } from '../services/api'
 
 function CreateEvent() {
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
   const [date, setDate] = useState('')
   const [location, setLocation] = useState('')
   const [capacity, setCapacity] = useState('')
 
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
-  const navigate = useNavigate()
-
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
 
     setError('')
+    setSuccess(false)
 
-    if (!title || !description || !date || !location || !capacity) {
+    if (!title || !date || !location || !capacity) {
       setError('Preencha todos os campos.')
       return
     }
@@ -29,24 +25,14 @@ function CreateEvent() {
       return
     }
 
-    setLoading(true)
+    console.log({
+      title,
+      date,
+      location,
+      capacity: Number(capacity),
+    })
 
-    try {
-      const createdEvent = await createEvent({
-        title,
-        description,
-        date,
-        location,
-        capacity: Number(capacity),
-      })
-
-      navigate(`/events/${createdEvent.id}`)
-    } catch (error) {
-      console.error(error)
-      setError('Não foi possível criar o evento.')
-    } finally {
-      setLoading(false)
-    }
+    setSuccess(true)
   }
 
   return (
@@ -55,9 +41,12 @@ function CreateEvent() {
 
       {error && <p>{error}</p>}
 
+      {success && <p>Evento criado com sucesso!</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Título</label>
+
           <input
             id="title"
             type="text"
@@ -67,19 +56,11 @@ function CreateEvent() {
         </div>
 
         <div>
-          <label htmlFor="description">Descrição</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </div>
-
-        <div>
           <label htmlFor="date">Data</label>
+
           <input
             id="date"
-            type="datetime-local"
+            type="date"
             value={date}
             onChange={(event) => setDate(event.target.value)}
           />
@@ -87,6 +68,7 @@ function CreateEvent() {
 
         <div>
           <label htmlFor="location">Local</label>
+
           <input
             id="location"
             type="text"
@@ -97,6 +79,7 @@ function CreateEvent() {
 
         <div>
           <label htmlFor="capacity">Capacidade</label>
+
           <input
             id="capacity"
             type="number"
@@ -106,8 +89,8 @@ function CreateEvent() {
           />
         </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Criando...' : 'Criar evento'}
+        <button type="submit">
+          Criar evento
         </button>
       </form>
     </main>
@@ -115,4 +98,3 @@ function CreateEvent() {
 }
 
 export default CreateEvent
-
