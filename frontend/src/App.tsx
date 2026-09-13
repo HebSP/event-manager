@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
+import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -21,7 +21,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/events/create" element={<CreateEvent />} />
+          <Route
+            path="/events/create"
+            element={
+              <ProtectedRoute>
+                <CreateEvent />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/events/:id" element={<EventDetails />} />
         </Routes>
       </BrowserRouter>
