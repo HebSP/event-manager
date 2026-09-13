@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import EventDetails from './pages/EventDetails'
 import CreateEvent from './pages/CreateEvent'
+import EditEvent from './pages/EditEvent'
 
 import { AuthProvider } from './context/AuthContext'
 
@@ -30,6 +31,14 @@ function App() {
             }
           />
           <Route path="/events/:id" element={<EventDetails />} />
+          <Route
+            path="/events/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditEvent />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

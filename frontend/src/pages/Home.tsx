@@ -1,10 +1,21 @@
 import EventCard from '../components/EventCard'
-import { events } from '../data/events'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-
+import { useEffect, useState } from 'react'
+import { getEvents, type Event } from '../services/api'
 function Home() {
   const { user } = useAuth()
+  const [events, setEvents] = useState<Event[]>([])
+  
+  useEffect(() => {
+    getEvents()
+      .then((data) => {
+        setEvents(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }, [])
 
   return (
     <main>
