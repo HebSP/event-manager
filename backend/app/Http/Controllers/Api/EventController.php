@@ -12,7 +12,22 @@ class EventController extends Controller
 {
     public function index(): JsonResponse
     {
-        $events = Event::with('creator')->get();
+        $events = Event::with('creator')
+            ->withCount('participants')
+            ->get()
+            ->map(function (Event $event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'description' => $event->description,
+                    'location' => $event->location,
+                    'date' => $event->date,
+                    'capacity' => $event->capacity,
+                    'registered' => $event->participants_count,
+                    'created_by' => $event->created_by,
+                    'creator' => $event->creator,
+                ];
+            });
 
         return response()->json($events);
     }
@@ -105,5 +120,24 @@ class EventController extends Controller
         $participants = $event->participants()->get();
 
         return response()->json($participants);
+    }
+
+    public function show(Event $event): JsonResponse
+    {
+        $event->load('creator');
+
+        $event->loadCount('participants');
+
+        return response()->json([
+            'id' => $event->id,
+            'title' => $event->title,
+            'description' => $event->description,
+            'location' => $event->location,
+            'date' => $event->date,
+            'capacity' => $event->capacity,
+            'registered' => $event->participants_count,
+            'created_by' => $event->created_by,
+            'creator' => $event->creator,
+        ]);
     }
 }

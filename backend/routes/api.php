@@ -16,6 +16,8 @@ Route::middleware('auth:sanctum')->put('/events/{event}', [EventController::clas
 
 Route::middleware('auth:sanctum')->delete('/events/{event}', [EventController::class, 'destroy']);
 
+Route::get('/events/{event}', [EventController::class, 'show']);
+
 Route::middleware('auth:sanctum')->post('/events/{event}/register', [EventController::class, 'register']);
 
 Route::middleware('auth:sanctum')->delete('/events/{event}/register', [EventController::class, 'unregister']);

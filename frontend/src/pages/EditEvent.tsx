@@ -1,21 +1,50 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createEvent } from '../services/api'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-function CreateEvent() {
+import { getEvent, updateEvent, type Event } from '../services/api'
+
+function EditEvent() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+
+  const [event, setEvent] = useState<Event | null>(null)
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [date, setDate] = useState('')
   const [location, setLocation] = useState('')
   const [capacity, setCapacity] = useState('')
 
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    if (!id) return
+
+    getEvent(Number(id))
+      .then((data) => {
+        setEvent(data)
+
+        setTitle(data.title)
+        setDescription(data.description)
+        setDate(data.date.slice(0, 16))
+        setLocation(data.location)
+        setCapacity(String(data.capacity))
+      })
+      .catch((error) => {
+        console.error(error)
+        setError('Não foi possível carregar o evento.')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [id])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+
+    if (!id) return
 
     setError('')
 
@@ -29,10 +58,10 @@ function CreateEvent() {
       return
     }
 
-    setLoading(true)
+    setSaving(true)
 
     try {
-      const createdEvent = await createEvent({
+      await updateEvent(Number(id), {
         title,
         description,
         date,
@@ -40,18 +69,26 @@ function CreateEvent() {
         capacity: Number(capacity),
       })
 
-      navigate(`/events/${createdEvent.id}`)
+      navigate(`/events/${id}`)
     } catch (error) {
       console.error(error)
-      setError('Não foi possível criar o evento.')
+      setError('Não foi possível atualizar o evento.')
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
+  }
+
+  if (loading) {
+    return <p>Carregando evento...</p>
+  }
+
+  if (!event) {
+    return <p>{error || 'Evento não encontrado.'}</p>
   }
 
   return (
     <main>
-      <h1>Criar evento</h1>
+      <h1>Editar evento</h1>
 
       {error && <p>{error}</p>}
 
@@ -106,13 +143,12 @@ function CreateEvent() {
           />
         </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Criando...' : 'Criar evento'}
+        <button type="submit" disabled={saving}>
+          {saving ? 'Salvando...' : 'Salvar alterações'}
         </button>
       </form>
     </main>
   )
 }
 
-export default CreateEvent
-
+export default EditEvent
