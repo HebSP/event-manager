@@ -6,24 +6,47 @@ function CreateEvent() {
   const [location, setLocation] = useState('')
   const [capacity, setCapacity] = useState('')
 
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
+
+    setError('')
+    setSuccess(false)
+
+    if (!title || !date || !location || !capacity) {
+      setError('Preencha todos os campos.')
+      return
+    }
+
+    if (Number(capacity) < 1) {
+      setError('A capacidade deve ser maior que zero.')
+      return
+    }
 
     console.log({
       title,
       date,
       location,
-      capacity,
+      capacity: Number(capacity),
     })
+
+    setSuccess(true)
   }
 
   return (
     <main>
       <h1>Criar evento</h1>
 
+      {error && <p>{error}</p>}
+
+      {success && <p>Evento criado com sucesso!</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Título</label>
+
           <input
             id="title"
             type="text"
@@ -34,6 +57,7 @@ function CreateEvent() {
 
         <div>
           <label htmlFor="date">Data</label>
+
           <input
             id="date"
             type="date"
@@ -44,6 +68,7 @@ function CreateEvent() {
 
         <div>
           <label htmlFor="location">Local</label>
+
           <input
             id="location"
             type="text"
@@ -54,6 +79,7 @@ function CreateEvent() {
 
         <div>
           <label htmlFor="capacity">Capacidade</label>
+
           <input
             id="capacity"
             type="number"
@@ -63,7 +89,9 @@ function CreateEvent() {
           />
         </div>
 
-        <button type="submit">Criar evento</button>
+        <button type="submit">
+          Criar evento
+        </button>
       </form>
     </main>
   )
