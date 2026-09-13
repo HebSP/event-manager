@@ -1,7 +1,11 @@
 import EventCard from '../components/EventCard'
 import { events } from '../data/events'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function Home() {
+  const { user } = useAuth()
+
   return (
     <main>
       <section className="hero">
@@ -15,6 +19,18 @@ function Home() {
           type="text"
           placeholder="Pesquisar eventos..."
         />
+
+        <div>
+          {user ? (
+            <Link to="/events/create">
+              <button>Criar evento</button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <button>Faça login para criar um evento</button>
+            </Link>
+          )}
+        </div>
       </section>
 
       <section className="events-section">
